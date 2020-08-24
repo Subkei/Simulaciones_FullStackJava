@@ -1,7 +1,7 @@
 # Simulaciones_FullStackJava
 Ensayos Full Stack Java
 
-##Ensayo 2
+## Ensayo 2
 Nombre del proyecto: Ensayo para la evaluación final del curso Full Stack Java
 
 Tema: Generar una solución de negocio basada en una plataforma web construida bajo arquitectura JEE
