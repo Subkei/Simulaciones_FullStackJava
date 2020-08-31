@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xmlns:context="http://www.springframework.org/schema/context" 
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans 
+    	http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context 
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/mvc 
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/tx 
+        http://www.springframework.org/schema/tx/spring-tx.xsd
+        http://www.springframework.org/schema/data/jpa 
+        http://www.springframework.org/schema/data/jpa/spring-jpa.xsd">
+    
+    <context:property-placeholder location="/WEB-INF/spring/jdbc.properties" />
+
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">    
+		<property name="prefix" value="/WEB-INF/jsp/"></property>    
+		<property name="suffix" value=".jsp"></property>    
+	</bean>    
+
+	<bean class="org.springframework.context.support.ResourceBundleMessageSource"
+      id = "messageSource">
+      <property name = "basename" value = "messages" />
+   	</bean>
+   	<!-- Conexión a la Base de Datos -->
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName"
+			value="oracle.jdbc.driver.OracleDriver"></property>
+		<property name="url"
+			value="jdbc:oracle:thin:@localhost:1521:xe"></property>
+		<property name="username" value="ensayo6"></property>
+		<property name="password" value="1234"></property>
+	</bean>
+
+    <!-- Configure JPA the entity manager factory bean -->
+    <bean id="entityManagerFactory"
+        class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="dataSource" ref="dataSource" />
+        
+        <property name="packagesToScan" value="cl.awakelab.modelo" />
+        
+		<!-- Vendor Adapter -->
+   		<property name="jpaVendorAdapter">
+   			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" />        
+   		</property>
+   		
+        <!-- Set JPA properties -->
+        <property name="jpaProperties">
+            <props>
+                <prop key="hibernate.dialect">${hibernate.dialect}</prop>
+                
+                <!-- Consultas SQL (depuración) -->
+                <prop key="hibernate.show_sql">true</prop>
+
+                <!-- Comentarios SQL -->
+                <prop key="use_sql_comments">true</prop>
+            </props>
+        </property>
+    </bean>
+            
+    <!-- Configure the transaction manager bean -->
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManagerFactory" />
+    </bean>
+	<!-- Habilita la configuración del ambiente Transactional basado en anotaciones -->
+    <tx:annotation-driven/>
+
+    <jpa:repositories base-package="cl.awakelab.modelo" />
+    <!-- Activa las anotaciones y escanea los paquetes para encontrar los beans dentro del context -->
+    <context:component-scan base-package="cl.awakelab.servicio" />
+    
+</beans>
